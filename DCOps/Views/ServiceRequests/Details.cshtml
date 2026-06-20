@@ -1,0 +1,48 @@
+@using DCOps.Web.Models.Entities
+@model ServiceRequest
+@{
+    ViewData["Title"] = "تفاصيل طلب الخدمة";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex align-items-center mb-4 gap-3">
+            <a href="/ServiceRequests" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-right"></i>
+            </a>
+            <h5 class="mb-0">تفاصيل طلب الخدمة</h5>
+        </div>
+
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <span><i class="bi bi-headset me-2"></i>@Model.Title</span>
+                @{
+                    var statusClass = Model.Status switch { "open" => "bg-primary", "in_progress" => "bg-warning text-dark", "resolved" => "bg-success", "closed" => "bg-secondary", _ => "bg-secondary" };
+                    var statusLabel = Model.Status switch { "open" => "مفتوح", "in_progress" => "قيد المعالجة", "resolved" => "محلول", "closed" => "مغلق", _ => Model.Status };
+                }
+                <span class="badge @statusClass">@statusLabel</span>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-borderless">
+                    <tr><th class="text-muted" style="width:30%">رقم الطلب</th><td><code>@Model.RequestNo</code></td></tr>
+                    <tr><th class="text-muted">نوع الطلب</th><td>@(Model.RequestType ?? "—")</td></tr>
+                    <tr><th class="text-muted">الأولوية</th><td>@(Model.Priority ?? "—")</td></tr>
+                    <tr><th class="text-muted">مقدم الطلب</th><td>@(Model.RequestedBy ?? "—")</td></tr>
+                    <tr><th class="text-muted">المكلف</th><td>@(Model.AssignedTo ?? "—")</td></tr>
+                    <tr><th class="text-muted">تاريخ الإنشاء</th><td>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td></tr>
+                    <tr><th class="text-muted">آخر تحديث</th><td>@Model.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</td></tr>
+                    @if (Model.ClosedAt.HasValue)
+                    {
+                        <tr><th class="text-muted">تاريخ الإغلاق</th><td>@Model.ClosedAt.Value.ToString("dd/MM/yyyy HH:mm")</td></tr>
+                    }
+                </table>
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <label class="form-label fw-semibold text-muted">الوصف التفصيلي</label>
+                    <div class="bg-light rounded p-3">@Model.Description</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

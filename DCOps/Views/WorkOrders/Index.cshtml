@@ -1,0 +1,114 @@
+@using DCOps.Web.Models.Entities
+@model List<WorkOrder>
+@{
+    ViewData["Title"] = "أوامر العمل";
+    Layout = "_Layout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h5 class="mb-1">أوامر العمل</h5>
+        <small class="text-muted">إجمالي: @Model.Count</small>
+    </div>
+    <a href="/WorkOrders/Create" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-circle me-1"></i>أمر عمل جديد
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>رقم الأمر</th>
+                            <th>العنوان</th>
+                            <th>النوع</th>
+                            <th>الأولوية</th>
+                            <th>الحالة</th>
+                            <th>المكلف</th>
+                            <th>تاريخ الإنشاء</th>
+                            <th class="text-center">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var wo in Model)
+                        {
+                            <tr>
+                                <td><code>@wo.OrderNo</code></td>
+                                <td><strong>@wo.Title</strong></td>
+                                <td>@(wo.Type ?? "—")</td>
+                                <td>
+                                    @{
+                                        var prioClass = wo.Priority switch
+                                        {
+                                            "critical" => "bg-danger",
+                                            "high" => "bg-warning text-dark",
+                                            "medium" => "bg-info text-dark",
+                                            "low" => "bg-secondary",
+                                            _ => "bg-secondary"
+                                        };
+                                        var prioLabel = wo.Priority switch
+                                        {
+                                            "critical" => "حرج",
+                                            "high" => "عالي",
+                                            "medium" => "متوسط",
+                                            "low" => "منخفض",
+                                            _ => wo.Priority
+                                        };
+                                    }
+                                    <span class="badge @prioClass">@prioLabel</span>
+                                </td>
+                                <td>
+                                    @{
+                                        var statusClass = wo.Status switch
+                                        {
+                                            "open" => "bg-primary",
+                                            "in_progress" => "bg-warning text-dark",
+                                            "completed" => "bg-success",
+                                            "cancelled" => "bg-secondary",
+                                            _ => "bg-secondary"
+                                        };
+                                        var statusLabel = wo.Status switch
+                                        {
+                                            "open" => "مفتوح",
+                                            "in_progress" => "قيد التنفيذ",
+                                            "completed" => "مكتمل",
+                                            "cancelled" => "ملغي",
+                                            _ => wo.Status
+                                        };
+                                    }
+                                    <span class="badge @statusClass">@statusLabel</span>
+                                </td>
+                                <td>@(wo.AssignedTo ?? "—")</td>
+                                <td>@wo.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="/WorkOrders/Details/@wo.Id" class="btn btn-outline-info" title="التفاصيل">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="/WorkOrders/Edit/@wo.Id" class="btn btn-outline-primary" title="تعديل">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-tools" style="font-size:3rem;"></i>
+                <p class="mt-3">لا توجد أوامر عمل بعد</p>
+                <a href="/WorkOrders/Create" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle me-1"></i>إنشاء أول أمر عمل
+                </a>
+            </div>
+        }
+    </div>
+</div>

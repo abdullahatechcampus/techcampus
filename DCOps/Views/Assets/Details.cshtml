@@ -1,0 +1,91 @@
+@using DCOps.Web.Models.Entities
+@model Asset
+@{
+    ViewData["Title"] = "تفاصيل الأصل";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="d-flex align-items-center mb-4 gap-3">
+            <a href="/Assets" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-right"></i>
+            </a>
+            <h5 class="mb-0">تفاصيل الأصل</h5>
+            <a href="/Assets/Edit/@Model.Id" class="btn btn-primary btn-sm ms-auto">
+                <i class="bi bi-pencil me-1"></i>تعديل
+            </a>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-hdd-stack text-primary"></i>
+                <span>@Model.Name</span>
+                @{
+                    var statusClass = Model.Status switch
+                    {
+                        "active" => "bg-success",
+                        "inactive" => "bg-secondary",
+                        "maintenance" => "bg-warning",
+                        "retired" => "bg-danger",
+                        _ => "bg-secondary"
+                    };
+                    var statusLabel = Model.Status switch
+                    {
+                        "active" => "نشط",
+                        "inactive" => "غير نشط",
+                        "maintenance" => "تحت الصيانة",
+                        "retired" => "متقاعد",
+                        _ => Model.Status
+                    };
+                }
+                <span class="badge @statusClass ms-auto">@statusLabel</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <table class="table table-sm table-borderless">
+                            <tbody>
+                                <tr><th class="text-muted" style="width:45%">كود الأصل</th><td><code>@Model.AssetCode</code></td></tr>
+                                <tr><th class="text-muted">النوع</th><td>@(Model.AssetType ?? "—")</td></tr>
+                                <tr><th class="text-muted">الفئة</th><td>@(Model.Category ?? "—")</td></tr>
+                                <tr><th class="text-muted">الموقع</th><td>@(Model.Location ?? "—")</td></tr>
+                                <tr><th class="text-muted">عنوان IP</th><td>@(Model.IpAddress ?? "—")</td></tr>
+                                <tr><th class="text-muted">المالك</th><td>@(Model.Owner ?? "—")</td></tr>
+                                <tr><th class="text-muted">القسم</th><td>@(Model.Department ?? "—")</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-sm table-borderless">
+                            <tbody>
+                                <tr><th class="text-muted" style="width:45%">الرقم التسلسلي</th><td>@(Model.SerialNumber ?? "—")</td></tr>
+                                <tr><th class="text-muted">الشركة المصنعة</th><td>@(Model.Manufacturer ?? "—")</td></tr>
+                                <tr><th class="text-muted">الموديل</th><td>@(Model.Model ?? "—")</td></tr>
+                                <tr><th class="text-muted">تاريخ الشراء</th><td>@(Model.PurchaseDate?.ToString("dd/MM/yyyy") ?? "—")</td></tr>
+                                <tr><th class="text-muted">انتهاء الضمان</th><td>@(Model.WarrantyExpiry?.ToString("dd/MM/yyyy") ?? "—")</td></tr>
+                                <tr><th class="text-muted">تاريخ الإضافة</th><td>@Model.CreatedAt.ToString("dd/MM/yyyy")</td></tr>
+                                <tr><th class="text-muted">آخر تحديث</th><td>@Model.UpdatedAt.ToString("dd/MM/yyyy")</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-muted">ملاحظات</label>
+                            <div class="bg-light rounded p-3">@Model.Notes</div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="card-footer d-flex gap-2 justify-content-end">
+                <a href="/Assets/Edit/@Model.Id" class="btn btn-primary btn-sm">
+                    <i class="bi bi-pencil me-1"></i>تعديل
+                </a>
+                <a href="/Assets/Delete/@Model.Id" class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-trash me-1"></i>حذف
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

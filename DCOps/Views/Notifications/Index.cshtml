@@ -1,0 +1,92 @@
+@using DCOps.Web.Models.Entities
+@model List<Notification>
+@{
+    ViewData["Title"] = "الإشعارات";
+    Layout = "_Layout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h5 class="mb-1">الإشعارات</h5>
+        <small class="text-muted">
+            @{
+                var unread = Model.Count(n => !n.IsRead);
+            }
+            @if (unread > 0)
+            {
+                <span class="badge bg-danger me-1">@unread</span>
+            }
+            إجمالي: @Model.Count إشعار
+        </small>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        @if (Model.Any())
+        {
+            <ul class="list-group list-group-flush">
+                @foreach (var notification in Model)
+                {
+                    <li class="list-group-item @(notification.IsRead ? "" : "bg-light")">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="mt-1">
+                                @{
+                                    var iconClass = notification.Severity switch
+                                    {
+                                        "critical" => "bi-exclamation-triangle-fill text-danger",
+                                        "warning" => "bi-exclamation-circle-fill text-warning",
+                                        "success" => "bi-check-circle-fill text-success",
+                                        _ => "bi-info-circle-fill text-info"
+                                    };
+                                }
+                                <i class="bi @iconClass fs-5"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <strong class="@(notification.IsRead ? "text-muted" : "")">@notification.Title</strong>
+                                    <small class="text-muted ms-3 text-nowrap">@notification.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
+                                </div>
+                                @if (!string.IsNullOrEmpty(notification.Message))
+                                {
+                                    <p class="mb-0 text-muted small mt-1">@notification.Message</p>
+                                }
+                                <div class="mt-2 d-flex align-items-center gap-2">
+                                    @{
+                                        var severityClass = notification.Severity switch { "critical" => "bg-danger", "warning" => "bg-warning text-dark", "success" => "bg-success", _ => "bg-info text-dark" };
+                                        var severityLabel = notification.Severity switch { "critical" => "حرج", "warning" => "تحذير", "success" => "نجاح", _ => "معلومة" };
+                                    }
+                                    <span class="badge @severityClass">@severityLabel</span>
+                                    @if (!notification.IsRead)
+                                    {
+                                        <span class="badge bg-primary">جديد</span>
+                                        <form method="post" action="/Notifications/MarkRead/@notification.Id" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-link btn-sm p-0 text-muted">
+                                                <i class="bi bi-check2 me-1"></i>وضع علامة مقروء
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <small class="text-muted">
+                                            <i class="bi bi-check2-all me-1"></i>
+                                            تمت القراءة @(notification.ReadAt?.ToString("dd/MM/yyyy HH:mm") ?? "")
+                                        </small>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-bell-slash" style="font-size:3rem;"></i>
+                <p class="mt-3">لا توجد إشعارات</p>
+            </div>
+        }
+    </div>
+</div>

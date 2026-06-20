@@ -1,0 +1,97 @@
+@using DCOps.Web.Models.Entities
+@model List<Asset>
+@{
+    ViewData["Title"] = "إدارة الأصول";
+    Layout = "_Layout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h5 class="mb-1">قاعدة بيانات الأصول (CMDB)</h5>
+        <small class="text-muted">إجمالي: @Model.Count أصل</small>
+    </div>
+    <a href="/Assets/Create" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-circle me-1"></i>إضافة أصل جديد
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>كود الأصل</th>
+                            <th>الاسم</th>
+                            <th>النوع</th>
+                            <th>الفئة</th>
+                            <th>الموقع</th>
+                            <th>الحالة</th>
+                            <th>رقم IP</th>
+                            <th class="text-center">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var asset in Model)
+                        {
+                            <tr>
+                                <td><code>@asset.AssetCode</code></td>
+                                <td><strong>@asset.Name</strong></td>
+                                <td>@(asset.AssetType ?? "—")</td>
+                                <td>@(asset.Category ?? "—")</td>
+                                <td>@(asset.Location ?? "—")</td>
+                                <td>
+                                    @{
+                                        var statusClass = asset.Status switch
+                                        {
+                                            "active" => "bg-success",
+                                            "inactive" => "bg-secondary",
+                                            "maintenance" => "bg-warning",
+                                            "retired" => "bg-danger",
+                                            _ => "bg-secondary"
+                                        };
+                                        var statusLabel = asset.Status switch
+                                        {
+                                            "active" => "نشط",
+                                            "inactive" => "غير نشط",
+                                            "maintenance" => "صيانة",
+                                            "retired" => "متقاعد",
+                                            _ => asset.Status
+                                        };
+                                    }
+                                    <span class="badge @statusClass">@statusLabel</span>
+                                </td>
+                                <td>@(asset.IpAddress ?? "—")</td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="/Assets/Details/@asset.Id" class="btn btn-outline-info" title="التفاصيل">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="/Assets/Edit/@asset.Id" class="btn btn-outline-primary" title="تعديل">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="/Assets/Delete/@asset.Id" class="btn btn-outline-danger" title="حذف">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-hdd-stack" style="font-size:3rem;"></i>
+                <p class="mt-3">لا توجد أصول مسجلة بعد</p>
+                <a href="/Assets/Create" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle me-1"></i>إضافة أول أصل
+                </a>
+            </div>
+        }
+    </div>
+</div>

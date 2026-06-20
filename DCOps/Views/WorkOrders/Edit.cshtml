@@ -1,0 +1,116 @@
+@using DCOps.Web.Models.Entities
+@model WorkOrder
+@{
+    ViewData["Title"] = "تعديل أمر العمل";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex align-items-center mb-4 gap-3">
+            <a href="/WorkOrders" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-right"></i>
+            </a>
+            <h5 class="mb-0">تعديل أمر العمل: @Model.OrderNo</h5>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form method="post" action="/WorkOrders/Edit/@Model.Id">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="Id" value="@Model.Id" />
+                    <input type="hidden" name="OrderNo" value="@Model.OrderNo" />
+                    <input type="hidden" name="CreatedAt" value="@Model.CreatedAt.ToString("o")" />
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">العنوان <span class="text-danger">*</span></label>
+                            <input type="text" name="Title" class="form-control" value="@Model.Title" required />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">النوع</label>
+                            <select name="Type" class="form-select">
+                                @foreach (var opt in new[] { ("corrective","إصلاحي"),("preventive","وقائي"),("emergency","طارئ"),("upgrade","ترقية"),("installation","تركيب") })
+                                {
+                                    <option value="@opt.Item1" @(Model.Type == opt.Item1 ? "selected" : "")>@opt.Item2</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">الأولوية</label>
+                            <select name="Priority" class="form-select">
+                                @foreach (var opt in new[] { ("low","منخفض"),("medium","متوسط"),("high","عالي"),("critical","حرج") })
+                                {
+                                    <option value="@opt.Item1" @(Model.Priority == opt.Item1 ? "selected" : "")>@opt.Item2</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">الأصل المرتبط</label>
+                            <select name="AssetId" class="form-select">
+                                <option value="">-- بدون أصل --</option>
+                                @if (ViewBag.Assets != null)
+                                {
+                                    @foreach (Microsoft.AspNetCore.Mvc.Rendering.SelectListItem item in ViewBag.Assets)
+                                    {
+                                        <option value="@item.Value" @(item.Value == Model.AssetId?.ToString() ? "selected" : "")>@item.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">الحالة</label>
+                            <select name="Status" class="form-select">
+                                @foreach (var opt in new[] { ("open","مفتوح"),("in_progress","قيد التنفيذ"),("completed","مكتمل"),("cancelled","ملغي") })
+                                {
+                                    <option value="@opt.Item1" @(Model.Status == opt.Item1 ? "selected" : "")>@opt.Item2</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">المكلف</label>
+                            <input type="text" name="AssignedTo" class="form-control" value="@Model.AssignedTo" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">مقدم الطلب</label>
+                            <input type="text" name="RequestedBy" class="form-control" value="@Model.RequestedBy" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">الموعد المجدول</label>
+                            <input type="datetime-local" name="ScheduledAt" class="form-control"
+                                   value="@Model.ScheduledAt?.ToString("yyyy-MM-ddTHH:mm")" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">تاريخ الإنجاز</label>
+                            <input type="datetime-local" name="CompletedAt" class="form-control"
+                                   value="@Model.CompletedAt?.ToString("yyyy-MM-ddTHH:mm")" />
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">الوصف</label>
+                            <textarea name="Description" class="form-control" rows="3">@Model.Description</textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">ملاحظات</label>
+                            <textarea name="Notes" class="form-control" rows="2">@Model.Notes</textarea>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="/WorkOrders" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i>إلغاء
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i>حفظ التغييرات
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

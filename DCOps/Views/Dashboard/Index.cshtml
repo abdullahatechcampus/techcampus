@@ -1,0 +1,133 @@
+@using DCOps.Web.Services
+@model DashboardStats
+@{
+    ViewData["Title"] = "لوحة التحكم";
+    Layout = "_Layout";
+}
+
+<div class="row g-3 mb-4">
+    <!-- Total Assets -->
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card h-100">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="stat-icon bg-primary bg-opacity-10">
+                    <i class="bi bi-hdd-stack text-primary"></i>
+                </div>
+                <span class="badge bg-primary bg-opacity-10 text-primary">CMDB</span>
+            </div>
+            <div class="stat-value">@Model.TotalAssets</div>
+            <div class="stat-label">إجمالي الأصول</div>
+        </div>
+    </div>
+
+    <!-- Open Work Orders -->
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card h-100">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="stat-icon bg-warning bg-opacity-10">
+                    <i class="bi bi-tools text-warning"></i>
+                </div>
+                <span class="badge bg-warning bg-opacity-10 text-warning">مفتوح</span>
+            </div>
+            <div class="stat-value">@Model.OpenWorkOrders</div>
+            <div class="stat-label">أوامر العمل المفتوحة</div>
+        </div>
+    </div>
+
+    <!-- Active Alerts -->
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card h-100">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="stat-icon bg-danger bg-opacity-10">
+                    <i class="bi bi-bell-fill text-danger"></i>
+                </div>
+                <span class="badge bg-danger bg-opacity-10 text-danger">تنبيه</span>
+            </div>
+            <div class="stat-value">@Model.ActiveAlerts</div>
+            <div class="stat-label">التنبيهات النشطة</div>
+        </div>
+    </div>
+
+    <!-- Pending Approvals -->
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card h-100">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="stat-icon bg-info bg-opacity-10">
+                    <i class="bi bi-hourglass-split text-info"></i>
+                </div>
+                <span class="badge bg-info bg-opacity-10 text-info">انتظار</span>
+            </div>
+            <div class="stat-value">@Model.PendingApprovals</div>
+            <div class="stat-label">الموافقات المعلقة</div>
+        </div>
+    </div>
+</div>
+
+<!-- Second Row -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card h-100">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="stat-icon bg-success bg-opacity-10">
+                    <i class="bi bi-file-earmark-text text-success"></i>
+                </div>
+                <span class="badge bg-success bg-opacity-10 text-success">نشط</span>
+            </div>
+            <div class="stat-value">@Model.ActiveContracts</div>
+            <div class="stat-label">العقود النشطة</div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card h-100">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="stat-icon bg-secondary bg-opacity-10">
+                    <i class="bi bi-headset text-secondary"></i>
+                </div>
+                <span class="badge bg-secondary bg-opacity-10 text-secondary">مفتوح</span>
+            </div>
+            <div class="stat-value">@Model.ServiceRequestsOpen</div>
+            <div class="stat-label">طلبات الخدمة المفتوحة</div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row g-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-lightning-charge me-2"></i>الإجراءات السريعة
+            </div>
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-auto">
+                        <a href="/Assets/Create" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-plus-circle me-1"></i>إضافة أصل
+                        </a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="/WorkOrders/Create" class="btn btn-outline-warning btn-sm">
+                            <i class="bi bi-plus-circle me-1"></i>أمر عمل جديد
+                        </a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="/ServiceRequests/Create" class="btn btn-outline-success btn-sm">
+                            <i class="bi bi-plus-circle me-1"></i>طلب خدمة جديد
+                        </a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="/Maintenance/Create" class="btn btn-outline-info btn-sm">
+                            <i class="bi bi-plus-circle me-1"></i>خطة صيانة جديدة
+                        </a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="/Notifications" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-bell me-1"></i>عرض الإشعارات
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,93 @@
+@using DCOps.Web.Models.Entities
+@model List<ServiceRequest>
+@{
+    ViewData["Title"] = "طلبات الخدمة";
+    Layout = "_Layout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h5 class="mb-1">طلبات الخدمة</h5>
+        <small class="text-muted">إجمالي: @Model.Count طلب</small>
+    </div>
+    <a href="/ServiceRequests/Create" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-circle me-1"></i>طلب خدمة جديد
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>العنوان</th>
+                            <th>النوع</th>
+                            <th>الأولوية</th>
+                            <th>الحالة</th>
+                            <th>مقدم الطلب</th>
+                            <th>تاريخ الإنشاء</th>
+                            <th class="text-center">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var req in Model)
+                        {
+                            <tr>
+                                <td><code>@req.RequestNo</code></td>
+                                <td><strong>@req.Title</strong></td>
+                                <td>
+                                    @{
+                                        var typeLabel = req.RequestType switch
+                                        {
+                                            "hardware" => "عتاد",
+                                            "software" => "برمجيات",
+                                            "network" => "شبكة",
+                                            "facilities" => "منشآت",
+                                            _ => req.RequestType ?? "—"
+                                        };
+                                    }
+                                    @typeLabel
+                                </td>
+                                <td>
+                                    @{
+                                        var prioClass = req.Priority switch { "critical" => "bg-danger", "high" => "bg-warning text-dark", "medium" => "bg-info text-dark", _ => "bg-secondary" };
+                                        var prioLabel = req.Priority switch { "critical" => "حرج", "high" => "عالي", "medium" => "متوسط", "low" => "منخفض", _ => req.Priority };
+                                    }
+                                    <span class="badge @prioClass">@prioLabel</span>
+                                </td>
+                                <td>
+                                    @{
+                                        var statusClass = req.Status switch { "open" => "bg-primary", "in_progress" => "bg-warning text-dark", "resolved" => "bg-success", "closed" => "bg-secondary", _ => "bg-secondary" };
+                                        var statusLabel = req.Status switch { "open" => "مفتوح", "in_progress" => "قيد المعالجة", "resolved" => "محلول", "closed" => "مغلق", _ => req.Status };
+                                    }
+                                    <span class="badge @statusClass">@statusLabel</span>
+                                </td>
+                                <td>@(req.RequestedBy ?? "—")</td>
+                                <td>@req.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                <td class="text-center">
+                                    <a href="/ServiceRequests/Details/@req.Id" class="btn btn-outline-info btn-sm" title="التفاصيل">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-headset" style="font-size:3rem;"></i>
+                <p class="mt-3">لا توجد طلبات خدمة بعد</p>
+                <a href="/ServiceRequests/Create" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle me-1"></i>تقديم أول طلب
+                </a>
+            </div>
+        }
+    </div>
+</div>

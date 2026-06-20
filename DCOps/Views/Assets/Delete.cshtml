@@ -1,0 +1,36 @@
+@using DCOps.Web.Models.Entities
+@model Asset
+@{
+    ViewData["Title"] = "حذف الأصل";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <i class="bi bi-exclamation-triangle me-2"></i>تأكيد الحذف
+            </div>
+            <div class="card-body">
+                <p class="mb-3">هل أنت متأكد من حذف هذا الأصل؟ لا يمكن التراجع عن هذه العملية.</p>
+                <table class="table table-sm table-borderless">
+                    <tr><th class="text-muted">كود الأصل</th><td><code>@Model.AssetCode</code></td></tr>
+                    <tr><th class="text-muted">الاسم</th><td><strong>@Model.Name</strong></td></tr>
+                    <tr><th class="text-muted">النوع</th><td>@(Model.AssetType ?? "—")</td></tr>
+                    <tr><th class="text-muted">الموقع</th><td>@(Model.Location ?? "—")</td></tr>
+                </table>
+            </div>
+            <div class="card-footer d-flex justify-content-end gap-2">
+                <a href="/Assets" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle me-1"></i>إلغاء
+                </a>
+                <form method="post" action="/Assets/Delete/@Model.Id" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i>تأكيد الحذف
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

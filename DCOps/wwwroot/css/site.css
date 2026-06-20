@@ -1,0 +1,28 @@
+/* DCOps Custom Styles */
+body {
+    direction: rtl;
+    text-align: right;
+}
+
+/* RTL Overrides */
+.ms-auto { margin-right: auto !important; margin-left: 0 !important; }
+.me-1 { margin-left: 0.25rem !important; margin-right: 0 !important; }
+.me-2 { margin-left: 0.5rem !important; margin-right: 0 !important; }
+.me-3 { margin-left: 1rem !important; margin-right: 0 !important; }
+
+.table > :not(caption) > * > * {
+    padding: 0.65rem 0.75rem;
+}
+
+.btn-group-sm > .btn {
+    padding: 0.3rem 0.55rem;
+}
+
+code {
+    font-family: 'Courier New', monospace;
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #374151;
+    font-size: 0.85em;
+}

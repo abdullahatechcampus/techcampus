@@ -1,0 +1,110 @@
+@using DCOps.Web.Models.Entities
+@model WorkOrder
+@{
+    ViewData["Title"] = "إنشاء أمر عمل";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex align-items-center mb-4 gap-3">
+            <a href="/WorkOrders" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-right"></i>
+            </a>
+            <h5 class="mb-0">إنشاء أمر عمل جديد</h5>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form method="post" action="/WorkOrders/Create">
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold">عنوان الأمر <span class="text-danger">*</span></label>
+                            <input type="text" name="Title" class="form-control" required placeholder="وصف موجز لأمر العمل" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">النوع</label>
+                            <select name="Type" class="form-select">
+                                <option value="">-- اختر النوع --</option>
+                                <option value="corrective">إصلاحي</option>
+                                <option value="preventive">وقائي</option>
+                                <option value="emergency">طارئ</option>
+                                <option value="upgrade">ترقية</option>
+                                <option value="installation">تركيب</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">الأولوية</label>
+                            <select name="Priority" class="form-select">
+                                <option value="low">منخفض</option>
+                                <option value="medium" selected>متوسط</option>
+                                <option value="high">عالي</option>
+                                <option value="critical">حرج</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">الأصل المرتبط</label>
+                            <select name="AssetId" class="form-select">
+                                <option value="">-- بدون أصل --</option>
+                                @if (ViewBag.Assets != null)
+                                {
+                                    @foreach (Microsoft.AspNetCore.Mvc.Rendering.SelectListItem item in ViewBag.Assets)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">الحالة</label>
+                            <select name="Status" class="form-select">
+                                <option value="open" selected>مفتوح</option>
+                                <option value="in_progress">قيد التنفيذ</option>
+                                <option value="completed">مكتمل</option>
+                                <option value="cancelled">ملغي</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">المكلف بالتنفيذ</label>
+                            <input type="text" name="AssignedTo" class="form-control" placeholder="اسم الفني أو الفريق" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">مقدم الطلب</label>
+                            <input type="text" name="RequestedBy" class="form-control" placeholder="اسم مقدم الطلب" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">الموعد المجدول</label>
+                            <input type="datetime-local" name="ScheduledAt" class="form-control" />
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">الوصف التفصيلي</label>
+                            <textarea name="Description" class="form-control" rows="3" placeholder="وصف تفصيلي لأمر العمل..."></textarea>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">ملاحظات</label>
+                            <textarea name="Notes" class="form-control" rows="2" placeholder="ملاحظات إضافية..."></textarea>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="/WorkOrders" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i>إلغاء
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i>إنشاء أمر العمل
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

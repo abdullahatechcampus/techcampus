@@ -1,0 +1,141 @@
+@using DCOps.Web.Models.Entities
+@model ServiceRequest
+@{
+    ViewData["Title"] = "تقديم طلب خدمة";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex align-items-center mb-4 gap-3">
+            <a href="/ServiceRequests" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-right"></i>
+            </a>
+            <h5 class="mb-0">تقديم طلب خدمة جديد</h5>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-headset me-2 text-primary"></i>نموذج طلب الخدمة
+            </div>
+            <div class="card-body">
+                <form method="post" action="/ServiceRequests/Create">
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-3">
+                        <!-- عنوان الطلب -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">عنوان الطلب <span class="text-danger">*</span></label>
+                            <input type="text" name="Title" class="form-control" required
+                                   maxlength="200"
+                                   placeholder="أدخل عنواناً مختصراً وواضحاً لطلب الخدمة" />
+                            <div class="form-text">أدخل ملخصاً موجزاً يصف طبيعة الطلب</div>
+                        </div>
+
+                        <!-- نوع الطلب والأولوية -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">نوع الطلب <span class="text-danger">*</span></label>
+                            <select name="RequestType" class="form-select" required>
+                                <option value="">-- اختر نوع الطلب --</option>
+                                <option value="hardware">عتاد (Hardware)</option>
+                                <option value="software">برمجيات (Software)</option>
+                                <option value="network">شبكة (Network)</option>
+                                <option value="facilities">منشآت وبنية تحتية</option>
+                                <option value="security">أمن المعلومات</option>
+                                <option value="backup">نسخ احتياطي</option>
+                                <option value="other">أخرى</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">درجة الأولوية <span class="text-danger">*</span></label>
+                            <select name="Priority" class="form-select" required>
+                                <option value="low">منخفض - لا يؤثر على الإنتاج</option>
+                                <option value="medium" selected>متوسط - تأثير محدود</option>
+                                <option value="high">عالي - تأثير واسع على الخدمة</option>
+                                <option value="critical">حرج - توقف كامل للخدمة</option>
+                            </select>
+                        </div>
+
+                        <!-- الأصل المرتبط وSLA -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">الأصل المرتبط (اختياري)</label>
+                            <select name="AssetId" class="form-select">
+                                <option value="">-- بدون أصل محدد --</option>
+                                @if (ViewBag.Assets != null)
+                                {
+                                    @foreach (Microsoft.AspNetCore.Mvc.Rendering.SelectListItem item in ViewBag.Assets)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                }
+                            </select>
+                            <div class="form-text">حدد الجهاز أو الأصل المتعلق بالطلب إن وُجد</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">اتفاقية مستوى الخدمة (SLA)</label>
+                            <select name="SlaId" class="form-select">
+                                <option value="">-- اختر SLA --</option>
+                                @if (ViewBag.Slas != null)
+                                {
+                                    @foreach (Microsoft.AspNetCore.Mvc.Rendering.SelectListItem item in ViewBag.Slas)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <!-- مقدم الطلب والمكلف -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">اسم مقدم الطلب</label>
+                            <input type="text" name="RequestedBy" class="form-control"
+                                   placeholder="@User.FindFirst("FullName")?.Value"
+                                   value="@User.FindFirst("FullName")?.Value" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">تعيين إلى (اختياري)</label>
+                            <input type="text" name="AssignedTo" class="form-control"
+                                   placeholder="اسم الفني أو القسم المسؤول" />
+                        </div>
+
+                        <!-- الوصف التفصيلي -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">الوصف التفصيلي للمشكلة أو الطلب <span class="text-danger">*</span></label>
+                            <textarea name="Description" class="form-control" rows="5" required
+                                      placeholder="اشرح المشكلة أو الطلب بشكل تفصيلي:&#10;- ما هو السلوك المتوقع؟&#10;- ما هو السلوك الفعلي؟&#10;- متى بدأت المشكلة؟&#10;- هل تم تطبيق أي تغييرات مؤخراً؟"></textarea>
+                            <div class="form-text">الرجاء تفصيل المشكلة بدقة لتسريع المعالجة</div>
+                        </div>
+
+                        <!-- تنبيهات الأولوية -->
+                        <div class="col-12">
+                            <div class="alert alert-info d-flex align-items-start gap-2 mb-0" role="alert">
+                                <i class="bi bi-info-circle-fill mt-1"></i>
+                                <div>
+                                    <strong>ملاحظة:</strong> سيتم معالجة طلبات الأولوية الحرجة خلال ساعة واحدة.
+                                    طلبات الأولوية العالية خلال 4 ساعات.
+                                    يُرجى تحديد الأولوية بدقة لضمان استجابة سريعة.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="bi bi-shield-check me-1"></i>
+                            سيتم تسجيل هذا الطلب ومتابعته إلى حين الإغلاق
+                        </small>
+                        <div class="d-flex gap-2">
+                            <a href="/ServiceRequests" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle me-1"></i>إلغاء
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send me-1"></i>تقديم الطلب
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

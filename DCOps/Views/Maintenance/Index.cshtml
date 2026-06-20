@@ -1,0 +1,82 @@
+@using DCOps.Web.Models.Entities
+@model List<MaintenancePlan>
+@{
+    ViewData["Title"] = "خطط الصيانة";
+    Layout = "_Layout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h5 class="mb-1">خطط الصيانة</h5>
+        <small class="text-muted">إجمالي: @Model.Count خطة</small>
+    </div>
+    <a href="/Maintenance/Create" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-circle me-1"></i>خطة صيانة جديدة
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>كود الخطة</th>
+                            <th>الاسم</th>
+                            <th>التكرار</th>
+                            <th>الأصل</th>
+                            <th>المكلف</th>
+                            <th>الحالة</th>
+                            <th>الموعد القادم</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var plan in Model)
+                        {
+                            <tr>
+                                <td><code>@plan.PlanCode</code></td>
+                                <td><strong>@plan.Name</strong></td>
+                                <td>
+                                    @{
+                                        var freqLabel = plan.Frequency switch
+                                        {
+                                            "daily" => "يومي",
+                                            "weekly" => "أسبوعي",
+                                            "monthly" => "شهري",
+                                            "quarterly" => "ربع سنوي",
+                                            "annually" => "سنوي",
+                                            _ => plan.Frequency ?? "—"
+                                        };
+                                    }
+                                    @freqLabel
+                                </td>
+                                <td>@(plan.Asset?.Name ?? "—")</td>
+                                <td>@(plan.AssignedTo ?? "—")</td>
+                                <td>
+                                    @{
+                                        var statusClass = plan.Status == "active" ? "bg-success" : "bg-secondary";
+                                        var statusLabel = plan.Status == "active" ? "نشط" : "متوقف";
+                                    }
+                                    <span class="badge @statusClass">@statusLabel</span>
+                                </td>
+                                <td>@(plan.NextScheduled?.ToString("dd/MM/yyyy") ?? "—")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-calendar-check" style="font-size:3rem;"></i>
+                <p class="mt-3">لا توجد خطط صيانة بعد</p>
+                <a href="/Maintenance/Create" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle me-1"></i>إنشاء أول خطة
+                </a>
+            </div>
+        }
+    </div>
+</div>

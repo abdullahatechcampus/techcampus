@@ -1,0 +1,89 @@
+@using DCOps.Web.Models.Entities
+@model MaintenancePlan
+@{
+    ViewData["Title"] = "إنشاء خطة صيانة";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex align-items-center mb-4 gap-3">
+            <a href="/Maintenance" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-right"></i>
+            </a>
+            <h5 class="mb-0">إنشاء خطة صيانة جديدة</h5>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form method="post" action="/Maintenance/Create">
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold">اسم الخطة <span class="text-danger">*</span></label>
+                            <input type="text" name="Name" class="form-control" required placeholder="أدخل اسم خطة الصيانة" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">تكرار الصيانة</label>
+                            <select name="Frequency" class="form-select">
+                                <option value="">-- اختر التكرار --</option>
+                                <option value="daily">يومي</option>
+                                <option value="weekly">أسبوعي</option>
+                                <option value="monthly">شهري</option>
+                                <option value="quarterly">ربع سنوي</option>
+                                <option value="annually">سنوي</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">الحالة</label>
+                            <select name="Status" class="form-select">
+                                <option value="active" selected>نشط</option>
+                                <option value="inactive">متوقف</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">الأصل المرتبط</label>
+                            <select name="AssetId" class="form-select">
+                                <option value="">-- بدون أصل --</option>
+                                @if (ViewBag.Assets != null)
+                                {
+                                    @foreach (Microsoft.AspNetCore.Mvc.Rendering.SelectListItem item in ViewBag.Assets)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">المكلف بالتنفيذ</label>
+                            <input type="text" name="AssignedTo" class="form-control" placeholder="اسم الفني أو الفريق" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">الموعد القادم</label>
+                            <input type="date" name="NextScheduled" class="form-control" />
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">الوصف</label>
+                            <textarea name="Description" class="form-control" rows="3" placeholder="وصف تفصيلي لخطة الصيانة..."></textarea>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="/Maintenance" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i>إلغاء
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i>إنشاء الخطة
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
